@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nyan Cat 3D - Landing Page</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Audio de fondo -->
+    <audio id="backgroundAudio" loop>
+        <source src="original.mp3" type="audio/mpeg">
+        Tu navegador no soporta el elemento de audio.
+    </audio>
+
+    <div class="container">
+        <header>
+            <h1>NON-STOP NYAN CAT 3D</h1>
+            <h2>EXPERIMENTACION CON VIDEOJUEGOS 3D</h2>
+        </header>
+
+        <div class="warning">
+            <strong>NO EXISTEN MONEDAS OFICIALES DE NYAN CAT, ¡CUIDADO CON LAS ESTAFAS!</strong>
+        </div>
+
+        <div class="game-preview">
+            <div class="preview-container">
+                <div id="previewCanvas"></div>
+                <div class="preview-overlay">
+                    <h3>EXPERIMENTA EL NYAN CAT EN 3D</h3>
+                    <p>Controla a Nyan Cat en un entorno infinito y descubre items especiales</p>
+                    <button class="cta-button" id="playDemo">VER DEMO INTERACTIVA</button>
+                </div>
+            </div>
+            
+            <div class="features">
+                <div class="feature">
+                    <h3>MODELOS 3D INTERACTIVOS</h3>
+                    <p>Nyan Cat cobra vida en un entorno tridimensional utilizando Three.js</p>
+                </div>
+                <div class="feature">
+                    <h3>ITEMS DE TRANSFORMACION</h3>
+                    <p>Recoge sombreros mexicanos, versiones retro y mas para cambiar el aspecto</p>
+                </div>
+                <div class="feature">
+                    <h3>MÚSICA Y EFECTOS</h3>
+                    <p>Disfruta de la icOnica melodia de Nyan Cat con efectos visuales sincronizados</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="timer-section">
+            <div class="timer">
+                <div id="timerDisplay">NYANEANDO POR 0.0 SEGUNDOS</div>
+            </div>
+            <button class="btn" id="tweetScore">COMPARTIR PUNTAJE</button>
+        </div>
+
+        <div class="project-info">
+            <div class="info-block">
+                <h3>DESCRIPCION DEL PROYECTO</h3>
+                <p>El proyecto consiste en crear un Nyan Cat en 3D dentro de un entorno infinito (similar al espacio 3D de Blender) que pueda ser controlado por el usuario, como un videojuego. En este entorno apareceran diferentes items que el usuario podra recoger (por ejemplo, un sombrero mexicano, una versiOn retro o una versiOn corrupta). Cada item modificara el entorno visual del juego, la paleta de colores, la música y el diseño del propio Nyan Cat.</p>
+            </div>
+            
+            <div class="info-block">
+                <h3>MODELO DE VENTA</h3>
+                <p>El modelo de venta para Nyan Cat 3D se basa en ofrecer un juego web interactivo, divertido y absurdo, disponible a bajo costo. Se apoya en la viralidad: los jugadores comparten sus logros y clips del juego en redes sociales, mientras los rankings de tiempo jugado fomentan que vuelvan constantemente.</p>
+            </div>
+            
+            <div class="info-block">
+                <h3>INSPIRACION Y FUENTES</h3>
+                <ul>
+                    <li><a href="https://www.nyan.cat/index.php?cat=original" target="_blank">nyan.cat</a></li>
+                    <li><a href="https://bruno-simon.com/" target="_blank">3D car website</a></li>
+                    <li><a href="https://www.instagram.com/reel/DCE3waruAOP/?igsh=dmxqNXJxc3BpN3Zh" target="_blank">Reel de Instagram</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Nyan Cat 3D - ExperimentaciOn con videojuegos: implementaciOn de modelos 3D en paginas web interactivas</p>
+            <p class="copyright">Copyright © 2025 Nyan Cat 3D | Contacto: J2AN.S0l0@gmail.com</p>
+        </footer>
+    </div>
+
+    <script>
+        // Iniciar música de fondo
+        const audio = document.getElementById('backgroundAudio');
+        
+        // Intentar reproducir al cargar
+        audio.play().catch(function(error) {
+            console.log("Autoplay bloqueado, esperando interacciOn del usuario");
+        });
+        
+        // Reproducir con cualquier interacciOn del usuario
+        function startAudio() {
+            audio.play().catch(function(error) {
+                console.log("Error al reproducir audio:", error);
+            });
+            // Remover los listeners después de la primera reproducciOn
+            document.removeEventListener('click', startAudio);
+            document.removeEventListener('touchstart', startAudio);
+            document.removeEventListener('keydown', startAudio);
+        }
+        
+        // Escuchar múltiples tipos de interacciOn
+        document.addEventListener('click', startAudio);
+        document.addEventListener('touchstart', startAudio);
+        document.addEventListener('keydown', startAudio);
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>
