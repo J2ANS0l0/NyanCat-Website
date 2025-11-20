@@ -2,19 +2,21 @@ import { Link } from 'react-router-dom';
 import { Moon, Sun, Globe } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useNyan } from '@/contexts/NyanContext';
 import { Button } from '@/components/ui/button';
 import { transformText } from '@/utils/textTransforms';
 
 const Header = () => {
   const { theme, toggleTheme } = useTheme();
   const { language, setLanguage, t } = useLanguage();
+  const { isNyanMode } = useNyan();
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
         <Link to="/" className="flex items-center space-x-2">
           <span className="text-2xl font-bold text-gradient-rainbow">
-            {transformText('NYAN CAT 3D', true)}
+            {transformText('NYAN CAT 3D', true, isNyanMode)}
           </span>
         </Link>
 
@@ -23,19 +25,19 @@ const Header = () => {
             to="/"
             className="text-sm font-medium transition-colors hover:text-primary"
           >
-            {transformText(t('home'), true)}
+            {transformText(t('home'), true, isNyanMode)}
           </Link>
           <Link
             to="/about"
             className="text-sm font-medium transition-colors hover:text-primary"
           >
-            {transformText(t('about'), true)}
+            {transformText(t('about'), true, isNyanMode)}
           </Link>
           <Link
             to="/game"
             className="text-sm font-medium transition-colors hover:text-primary"
           >
-            {transformText(t('game'), true)}
+            {transformText(t('game'), true, isNyanMode)}
           </Link>
 
           <div className="flex items-center gap-2 ml-4 border-l border-border pl-4">
