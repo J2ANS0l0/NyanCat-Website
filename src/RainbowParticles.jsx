@@ -1,29 +1,58 @@
 import React, { useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { planePosition, planeZ, planeX, planeY } from './Airplane'
-import { Color, Vector3 } from 'three'
+import { Color, Vector3, Float32BufferAttribute } from 'three'
 
-// Partículas de arcoíris que siguen al Nyan Cat (tipo cursor)
+// Partículas arcoíris que crecen de forma indefinida siguiendo al Nyan Cat
 export function RainbowParticles() {
-  const COUNT = 3000
+  const INITIAL_CAPACITY = 500
 
-  // Buffer de posiciones de partículas
-  const positions = useMemo(() => new Float32Array(COUNT * 3), [COUNT])
-  // Colores por vértice (arcoíris)
-  const colors = useMemo(() => {
-    const arr = new Float32Array(COUNT * 3)
-    for (let i = 0; i < COUNT; i++) {
-      const t = i / COUNT
-      const color = new Color().setHSL(0.0 + 0.8 * t, 1.0, 0.5) // de rojo a violeta
-      arr[i * 3 + 0] = color.r
-      arr[i * 3 + 1] = color.g
-      arr[i * 3 + 2] = color.b
+  const capacityRef = useRef(INITIAL_CAPACITY)
+  const countRef = useRef(0)
+  const positionsRef = useRef(new Float32Array(INITIAL_CAPACITY * 3))
+  const colorsRef = useRef(new Float32Array(INITIAL_CAPACITY * 3))
+  const colorCycleRef = useRef(0)
+
+  const palette = useMemo(
+    () => [
+      new Color('#ff0044'),
+      new Color('#ff7b00'),
+      new Color('#ffe600'),
+      new Color('#00ff9f'),
+      new Color('#00b7ff'),
+      new Color('#8a2be2')
+    ],
+    []
+  )
+
+  const ensureCapacity = (required, geometry) => {
+    if (required <= capacityRef.current) return
+    let newCapacity = capacityRef.current
+    while (newCapacity < required) newCapacity *= 2
+
+    const newPositions = new Float32Array(newCapacity * 3)
+    newPositions.set(positionsRef.current)
+    positionsRef.current = newPositions
+
+    const newColors = new Float32Array(newCapacity * 3)
+    newColors.set(colorsRef.current)
+    colorsRef.current = newColors
+
+    capacityRef.current = newCapacity
+
+    if (geometry) {
+      geometry.setAttribute(
+        'position',
+        new Float32BufferAttribute(positionsRef.current, 3)
+      )
+      geometry.setAttribute(
+        'color',
+        new Float32BufferAttribute(colorsRef.current, 3)
+      )
     }
-    return arr
-  }, [COUNT])
+  }
 
   const pointsRef = useRef()
-  const spawnIndex = useRef(0)
   const tmpPlaneZ = useRef(new Vector3())
   const tmpPlaneX = useRef(new Vector3())
   const tmpPlaneY = useRef(new Vector3())
@@ -34,7 +63,6 @@ export function RainbowParticles() {
   useFrame(() => {
     if (!pointsRef.current) return
     const geometry = pointsRef.current.geometry
-    const posAttr = geometry.attributes.position
 
     // Copia segura del eje Z del modelo
     tmpPlaneZ.current.copy(planeZ).normalize()
@@ -42,19 +70,21 @@ export function RainbowParticles() {
     tmpPlaneY.current.copy(planeY).normalize()
 
     // Mover todas las partículas ligeramente hacia atrás respecto al movimiento del modelo
-    for (let i = 0; i < COUNT; i++) {
+    for (let i = 0; i < countRef.current; i++) {
       const ix = i * 3
       // El modelo avanza en -Z, así que +Z es "detrás"
-      positions[ix + 0] += tmpPlaneZ.current.x * 0.01
-      positions[ix + 1] += tmpPlaneZ.current.y * 0.01
-      positions[ix + 2] += tmpPlaneZ.current.z * 0.01
+      positionsRef.current[ix + 0] += tmpPlaneZ.current.x * 0.01
+      positionsRef.current[ix + 1] += tmpPlaneZ.current.y * 0.01
+      positionsRef.current[ix + 2] += tmpPlaneZ.current.z * 0.01
     }
 
     // Generar nuevas partículas en la cola del Nyan Cat
     const SPAWN_PER_FRAME = 12
     for (let s = 0; s < SPAWN_PER_FRAME; s++) {
-      const i = spawnIndex.current % COUNT
-      spawnIndex.current++
+      ensureCapacity(countRef.current + 1, geometry)
+
+      const i = countRef.current
+      countRef.current++
       const ix = i * 3
 
       // Punto base detrás del modelo y centrado
@@ -71,13 +101,28 @@ export function RainbowParticles() {
 
       const spawnPos = base.add(offset)
 
-      positions[ix + 0] = spawnPos.x
-      positions[ix + 1] = spawnPos.y
-      positions[ix + 2] = spawnPos.z
+      positionsRef.current[ix + 0] = spawnPos.x
+      positionsRef.current[ix + 1] = spawnPos.y
+      positionsRef.current[ix + 2] = spawnPos.z
+
+      const color = palette[colorCycleRef.current % palette.length]
+      colorCycleRef.current++
+      colorsRef.current[ix + 0] = color.r
+      colorsRef.current[ix + 1] = color.g
+      colorsRef.current[ix + 2] = color.b
     }
 
-    posAttr.array.set(positions)
+    geometry.setDrawRange(0, countRef.current)
+
+    const posAttr = geometry.getAttribute('position')
+    posAttr.array = positionsRef.current
+    posAttr.count = capacityRef.current
     posAttr.needsUpdate = true
+
+    const colorAttr = geometry.getAttribute('color')
+    colorAttr.array = colorsRef.current
+    colorAttr.count = capacityRef.current
+    colorAttr.needsUpdate = true
   })
 
   return (
@@ -85,14 +130,14 @@ export function RainbowParticles() {
       <bufferGeometry>
         <bufferAttribute
           attach="attributes-position"
-          count={COUNT}
-          array={positions}
+          count={capacityRef.current}
+          array={positionsRef.current}
           itemSize={3}
         />
         <bufferAttribute
           attach="attributes-color"
-          count={COUNT}
-          array={colors}
+          count={capacityRef.current}
+          array={colorsRef.current}
           itemSize={3}
         />
       </bufferGeometry>
