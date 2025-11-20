@@ -3,7 +3,7 @@ import { useFrame } from '@react-three/fiber'
 import { planePosition, planeZ, planeX, planeY } from './Airplane'
 import { Color, Vector3, Float32BufferAttribute } from 'three'
 
-// Partículas arcoíris que crecen de forma indefinida siguiendo al Nyan Cat
+// Partículas con estela arcoíris suave en bucle
 export function RainbowParticles() {
   const INITIAL_CAPACITY = 500
 
@@ -11,19 +11,7 @@ export function RainbowParticles() {
   const countRef = useRef(0)
   const positionsRef = useRef(new Float32Array(INITIAL_CAPACITY * 3))
   const colorsRef = useRef(new Float32Array(INITIAL_CAPACITY * 3))
-  const colorCycleRef = useRef(0)
-
-  const palette = useMemo(
-    () => [
-      new Color('#ff0044'),
-      new Color('#ff7b00'),
-      new Color('#ffe600'),
-      new Color('#00ff9f'),
-      new Color('#00b7ff'),
-      new Color('#8a2be2')
-    ],
-    []
-  )
+  const hueRef = useRef(0)
 
   const ensureCapacity = (required, geometry) => {
     if (required <= capacityRef.current) return
@@ -57,28 +45,24 @@ export function RainbowParticles() {
   const tmpPlaneX = useRef(new Vector3())
   const tmpPlaneY = useRef(new Vector3())
 
-  const MODEL_WIDTH = 0.26   // aproximado al ancho del Nyan Cat
-  const MODEL_HEIGHT = 0.18  // aproximado al alto
+  const MODEL_WIDTH = 0.26
+  const MODEL_HEIGHT = 0.18
 
   useFrame(() => {
     if (!pointsRef.current) return
     const geometry = pointsRef.current.geometry
 
-    // Copia segura del eje Z del modelo
     tmpPlaneZ.current.copy(planeZ).normalize()
     tmpPlaneX.current.copy(planeX).normalize()
     tmpPlaneY.current.copy(planeY).normalize()
 
-    // Mover todas las partículas ligeramente hacia atrás respecto al movimiento del modelo
     for (let i = 0; i < countRef.current; i++) {
       const ix = i * 3
-      // El modelo avanza en -Z, así que +Z es "detrás"
       positionsRef.current[ix + 0] += tmpPlaneZ.current.x * 0.01
       positionsRef.current[ix + 1] += tmpPlaneZ.current.y * 0.01
       positionsRef.current[ix + 2] += tmpPlaneZ.current.z * 0.01
     }
 
-    // Generar nuevas partículas en la cola del Nyan Cat
     const SPAWN_PER_FRAME = 12
     for (let s = 0; s < SPAWN_PER_FRAME; s++) {
       ensureCapacity(countRef.current + 1, geometry)
@@ -87,14 +71,15 @@ export function RainbowParticles() {
       countRef.current++
       const ix = i * 3
 
-      // Punto base detrás del modelo y centrado
       const base = new Vector3().copy(planePosition).add(
         new Vector3().copy(planeZ).multiplyScalar(0.18)
       )
 
-      // Offset aleatorio dentro del tamaño aproximado del modelo
       const offsetX = (Math.random() - 0.5) * MODEL_WIDTH
-      const offsetY = (Math.random() - 0.5) * MODEL_HEIGHT
+      // Dividir en 6 franjas horizontales fijas
+      const bandIndex = Math.floor(Math.random() * 6)
+      const bandHeight = MODEL_HEIGHT / 6
+      const offsetY = (bandIndex - 2.5) * bandHeight
       const offset = new Vector3()
         .addScaledVector(tmpPlaneX.current, offsetX)
         .addScaledVector(tmpPlaneY.current, offsetY)
@@ -105,8 +90,16 @@ export function RainbowParticles() {
       positionsRef.current[ix + 1] = spawnPos.y
       positionsRef.current[ix + 2] = spawnPos.z
 
-      const color = palette[colorCycleRef.current % palette.length]
-      colorCycleRef.current++
+      const bandColors = [
+        new Color('#ff0000'),
+        new Color('#ff7f00'),
+        new Color('#ffff00'),
+        new Color('#00ff00'),
+        new Color('#0000ff'),
+        new Color('#8b00ff')
+      ]
+      const color = bandColors[bandIndex]
+
       colorsRef.current[ix + 0] = color.r
       colorsRef.current[ix + 1] = color.g
       colorsRef.current[ix + 2] = color.b
@@ -151,5 +144,3 @@ export function RainbowParticles() {
     </points>
   )
 }
-
-
