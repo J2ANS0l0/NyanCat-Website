@@ -1,22 +1,14 @@
-import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { transformText, setNyanMode, getNyanMode } from '@/utils/textTransforms';
+import { useNyan } from '@/contexts/NyanContext';
+import { transformText } from '@/utils/textTransforms';
 import NyanCat3D from '@/components/NyanCat3D';
 import ScoreDisplay from '@/components/ScoreDisplay';
 import ScamWarning from '@/components/ScamWarning';
 
 const Game = () => {
   const { t } = useLanguage();
-  const [isNyanMode, setIsNyanMode] = useState(false);
-
-  const toggleNyanMode = () => {
-    const newMode = !isNyanMode;
-    setIsNyanMode(newMode);
-    setNyanMode(newMode);
-    // Force re-render by updating state
-    window.location.reload();
-  };
+  const { isNyanMode, toggleNyanMode } = useNyan();
 
   return (
     <div className="flex flex-col">
@@ -26,10 +18,10 @@ const Game = () => {
         <div className="container space-y-12">
           <div className="text-center space-y-4">
             <h1 className="text-5xl md:text-6xl font-bold text-gradient-rainbow">
-              {transformText(t('experience'), true)}
+              {transformText(t('experience'), true, isNyanMode)}
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              {t('controlDescription')}
+              {transformText(t('controlDescription'), false, isNyanMode)}
             </p>
             <div className="flex gap-4 justify-center">
               <Button
@@ -52,12 +44,12 @@ const Game = () => {
 
           <div className="max-w-4xl mx-auto bg-card/80 backdrop-blur rounded-lg p-8 border border-border">
             <h3 className="text-2xl font-bold mb-4 text-center text-gradient-rainbow">
-              {transformText('CONTROLS', true)}
+              {transformText('CONTROLS', true, isNyanMode)}
             </h3>
             <ul className="space-y-2 text-center text-muted-foreground">
-              <li>🖱️ Click and drag to rotate the view</li>
-              <li>🔍 Scroll to zoom in/out</li>
-              <li>👆 Click on Nyan Cat to interact</li>
+              <li>{transformText('🖱️ Click and drag to rotate the view', false, isNyanMode)}</li>
+              <li>{transformText('🔍 Scroll to zoom in/out', false, isNyanMode)}</li>
+              <li>{transformText('👆 Click on Nyan Cat to interact', false, isNyanMode)}</li>
             </ul>
           </div>
         </div>
