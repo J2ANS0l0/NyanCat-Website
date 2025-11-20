@@ -1,18 +1,18 @@
-# NyanCat-Website
+# React + Vite
 
-# Nyan Cat 3D
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-## DescripciOn de objetivos
-ExperimentaciOn con videojuegos: implementaciOn de modelos 3D en paginas web interactivas utilizando la biblioteca Three.js.
+Currently, two official plugins are available:
 
-## DescripciOn del proyecto
-El proyecto consiste en crear un Nyan Cat en 3D dentro de un entorno infinito (similar al espacio 3D de Blender) que pueda ser controlado por el usuario, como un videojuego.
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-En este entorno apareceran diferentes items que el usuario podra recoger (por ejemplo, un sombrero mexicano, una versiOn retro o una versiOn corrupta). Cada item modificara el entorno visual del juego, la paleta de colores, la música y el diseño del propio Nyan Cat.
+## React Compiler
 
-La pagina registrara el tiempo que el usuario pasa en ella (por ejemplo: “You’ve NYANED for 1114.8 seconds”) y lo guardara en una base de datos global.
+The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
 
-## InspiraciOn y fuentes
-- [nyan.cat](https://www.nyan.cat/index.php?cat=original)  
-- [3D car website](https://bruno-simon.com/)  
-- [Reel de Instagram](https://www.instagram.com/reel/DCE3waruAOP/?igsh=dmxqNXJxc3BpN3Zh)
+Note: This will impact Vite dev & build performances.
+
+## Expanding the ESLint configuration
+
+If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
