@@ -6,6 +6,7 @@ import { Vector3 } from "three";
 import { Airplane, planePosition, planeX, planeY, planeZ } from "./Airplane";
 import { MotionBlur } from "./MotionBlur";
 import { Stars } from "./Stars";
+import { RainbowParticles } from "./RainbowParticles";
 
 function App() {
   const lightRef = useRef();
@@ -35,6 +36,8 @@ function App() {
       <PerspectiveCamera makeDefault position={[0, 10, 10]} />
 
       <Stars />
+
+      <RainbowParticles />
 
       <Airplane />
 
