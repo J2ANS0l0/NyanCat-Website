@@ -7,7 +7,7 @@ import React, { useRef } from 'react'
 import { useGLTF } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber';
 import { Matrix4, Quaternion, Vector3 } from 'three';
-import { updatePlaneAxis } from './controls';
+import { updatePlaneAxis, cameraView } from './controls';
 
 const x = new Vector3(1, 0, 0);
 const y = new Vector3(0, 1, 0);
@@ -54,17 +54,47 @@ export function Airplane(props) {
     delayedRotMatrix.identity();
     delayedRotMatrix.makeRotationFromQuaternion(delayedQuaternion);
 
-    const cameraMatrix = new Matrix4()
-      .multiply(new Matrix4().makeTranslation(planePosition.x, planePosition.y, planePosition.z))
-      .multiply(delayedRotMatrix)
-      .multiply(new Matrix4().makeRotationX(-0.2))
-      .multiply(
-        new Matrix4().makeTranslation(0, 0.015, 0.3)
-      );
+    let cameraMatrix;
+    
+    if (cameraView === 0) {
+      // Vista actual: sigue al modelo desde atrás
+      cameraMatrix = new Matrix4()
+        .multiply(new Matrix4().makeTranslation(planePosition.x, planePosition.y, planePosition.z))
+        .multiply(delayedRotMatrix)
+        .multiply(new Matrix4().makeRotationX(-0.2))
+        .multiply(
+          new Matrix4().makeTranslation(0, 0.015, 0.3)
+        );
+    } else {
+      // Vista lateral: posición muy cercana al modelo
+      const sideOffset = new Vector3().copy(x).multiplyScalar(0.9); // más cerca del modelo
+      const sidePosition = new Vector3().copy(planePosition)
+        .add(sideOffset)
+        .add(new Vector3(0, 0.2, 0)); // ligera elevación
+      
+      // Calcular dirección hacia el modelo
+      const direction = new Vector3().subVectors(planePosition, sidePosition).normalize();
+      const right = new Vector3().crossVectors(direction, y).normalize();
+      const up = new Vector3().crossVectors(right, direction).normalize();
+      const forward = new Vector3().copy(direction).negate();
+      
+      // Crear matriz de vista lateral
+      const sideRotMatrix = new Matrix4().makeBasis(right, up, forward);
+      
+      cameraMatrix = new Matrix4()
+        .multiply(new Matrix4().makeTranslation(sidePosition.x, sidePosition.y, sidePosition.z))
+        .multiply(sideRotMatrix);
+    }
 
     camera.matrixAutoUpdate = false;
     camera.matrix.copy(cameraMatrix);
     camera.matrixWorldNeedsUpdate = true;
+
+    // Escala del modelo: grande en la vista lateral
+    if (groupRef.current) {
+      const scaleValue = cameraView === 1 ? 0.11 : 0.03;
+      groupRef.current.scale.set(scaleValue, scaleValue, scaleValue);
+    }
   });
 
   // Renderizar el modelo cubo

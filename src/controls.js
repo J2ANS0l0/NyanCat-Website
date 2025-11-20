@@ -16,6 +16,8 @@ let jawVelocity = 0;
 let pitchVelocity = 0;
 let planeSpeed = 0.006;
 export let turbo = 0;
+export let cameraView = 0; // 0 = vista actual (seguimiento), 1 = vista lateral
+let vKeyPressed = false;
 
 export function updatePlaneAxis(x, y, z, planePosition, camera) {
   jawVelocity *= 0.95;
@@ -27,19 +29,33 @@ export function updatePlaneAxis(x, y, z, planePosition, camera) {
   if (Math.abs(pitchVelocity) > maxVelocity) 
     pitchVelocity = Math.sign(pitchVelocity) * maxVelocity;
 
-  if (controls["a"]) {
+  // Mapear controles dependiendo de la vista
+  let inputA = controls["a"];
+  let inputD = controls["d"];
+  let inputW = controls["w"];
+  let inputS = controls["s"];
+
+  // En vista 2: W es D, D es W, A es S, S es A
+  if (cameraView === 1) {
+    inputW = controls["d"];
+    inputD = controls["w"];
+    inputA = controls["s"];
+    inputS = controls["a"];
+  }
+
+  if (inputA) {
     jawVelocity += 0.0025;
   }
 
-  if (controls["d"]) {
+  if (inputD) {
     jawVelocity -= 0.0025;
   }
 
-  if (controls["w"]) {
+  if (inputW) {
     pitchVelocity -= 0.0025;
   }
 
-  if (controls["s"]) {
+  if (inputS) {
     pitchVelocity += 0.0025;
   }
 
@@ -51,6 +67,14 @@ export function updatePlaneAxis(x, y, z, planePosition, camera) {
     y.set(0, 1, 0);
     z.set(0, 0, 1);
     planePosition.set(0, 3, 7);
+  }
+
+  // Alternar vista de cámara con la tecla "v"
+  if (controls["v"] && !vKeyPressed) {
+    cameraView = cameraView === 0 ? 1 : 0;
+    vKeyPressed = true;
+  } else if (!controls["v"]) {
+    vKeyPressed = false;
   }
 
   x.applyAxisAngle(z, jawVelocity);
