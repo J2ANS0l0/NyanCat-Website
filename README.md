@@ -1,73 +1,54 @@
-# Welcome to your Lovable project
+# NyanCat-Website
 
-## Project info
+# Nyan Cat 3D
 
-**URL**: https://lovable.dev/projects/7cc4b39f-56ba-4a8b-8823-e54e9aac5ea2
+## Descripcion de objetivos
+ExperimentaciOn con videojuegos: implementaciOn de modelos 3D en paginas web interactivas utilizando la biblioteca Three.js.
 
-## How can I edit this code?
+## Descripcion del proyecto
+El proyecto consiste en crear un Nyan Cat en 3D dentro de un entorno infinito (similar al espacio 3D de Blender) que pueda ser controlado por el usuario, como un videojuego.
 
-There are several ways of editing your application.
+En este entorno apareceran diferentes items que el usuario podra recoger (por ejemplo, un sombrero mexicano, una versiOn retro o una versiOn corrupta). Cada item modificara el entorno visual del juego, la paleta de colores, la música y el diseño del propio Nyan Cat.
 
-**Use Lovable**
+La pagina registrara el tiempo que el usuario pasa en ella (por ejemplo: “You’ve NYANED for 1114.8 seconds”) y lo guardara en una base de datos global.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/7cc4b39f-56ba-4a8b-8823-e54e9aac5ea2) and start prompting.
+## Inspiracion y fuentes
+- [nyan.cat](https://www.nyan.cat/index.php?cat=original)  
+- [3D car website](https://bruno-simon.com/)  
+- [Reel de Instagram](https://www.instagram.com/reel/DCE3waruAOP/?igsh=dmxqNXJxc3BpN3Zh)
 
-Changes made via Lovable will be committed automatically to this repo.
+## Nyan Cat 3D - Instalación
 
-**Use your preferred IDE**
+### Requisitos del Sistema
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+Node.js: Versión 16 o superior
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+npm: Versión 8 o superior
 
-Follow these steps:
+Navegador: Chrome, Firefox, Safari o Edge con soporte WebGL
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+RAM: Mínimo 4GB recomendado
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+GPU: Tarjeta gráfica con soporte WebGL
 
-# Step 3: Install the necessary dependencies.
-npm i
+# Instalación
+### Clonar el repositorio
+git clone https://github.com/tu-usuario/nyan-verse-explorer.git
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+### Navegar al directorio
+cd nyan-verse-explorer
+
+### Instalar Dependencias
+
+npm install
+
+npm install three @react-three/fiber@8.18.0 @react-three/drei@9.122.0
+
+npm install @react-three/postprocessing@2.10.0 --legacy-peer-deps
+
+### Correr el APP
+
 npm run dev
-```
 
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/7cc4b39f-56ba-4a8b-8823-e54e9aac5ea2) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+### La aplicación estará disponible en:
+http://localhost:8080
